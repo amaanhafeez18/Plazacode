@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Plaza Sushi Ecwid‐Only Printer Service</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 50px auto;
+      max-width: 800px;
+      line-height: 1.5;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 10px;
+      cursor: pointer;
+    }
+    #status {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #006600;
+    }
+    #dumpContainer {
+      margin-top: 30px;
+      text-align: left;
+    }
+    #dumpArea {
+      width: 100%;
+      max-height: 400px;
+      overflow: auto;
+      background: #f4f4f4;
+      border: 1px solid #ccc;
+      padding: 10px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+  <h1>Plaza Sushi Ecwid-Only Printer Service</h1>
+  <p>
+    <strong>1.</strong> If you haven’t authorized the app yet, <a href="/oauth/login">Authorize Clover App</a>.<br>
+    <strong>2.</strong> Click “Start Service” to begin polling only Ecwid orders every 20 seconds.<br>
+    <strong>3.</strong> Use “Dump Latest Order” to inspect the very latest order’s JSON (to find the Ecwid `source.id`).<br>
+  </p>
+
+  <!-- Start / Stop buttons -->
+  <button id="startBtn">Start Service</button>
+  <button id="stopBtn">Stop Service</button>
+  <div id="status"></div>
+
+  <!-- NEW: Dump Latest Order Section -->
+  <div id="dumpContainer">
+    <h2>Latest Order JSON Dump</h2>
+    <button id="dumpBtn">Dump Latest Order</button>
+    <pre id="dumpArea">No data yet. Click “Dump Latest Order” to fetch.</pre>
+  </div>
+
+  <script>
+    // Helper: update status area
+    const statusEl = document.getElementById('status');
+    function setStatus(msg, isError = false) {
+      statusEl.textContent = msg;
+      statusEl.style.color = isError ? '#cc0000' : '#006600';
+    }
+
+    // Start Service button
+    document.getElementById('startBtn').addEventListener('click', async () => {
+      try {
+        const resp = await fetch('/api/start', { method: 'POST' });
+        const text = await resp.text();
+        setStatus(text);
+      } catch (e) {
+        setStatus('Error starting service', true);
+        console.error(e);
+      }
+    });
+
+    // Stop Service button
+    document.getElementById('stopBtn').addEventListener('click', async () => {
+      try {
+        const resp = await fetch('/api/stop', { method: 'POST' });
+        const text = await resp.text();
+        setStatus(text);
+      } catch (e) {
+        setStatus('Error stopping service', true);
+        console.error(e);
+      }
+    });
+
+    // Dump Latest Order button
+    document.getElementById('dumpBtn').addEventListener('click', async () => {
+      const dumpArea = document.getElementById('dumpArea');
+      dumpArea.textContent = 'Fetching…';
+      try {
+        const resp = await fetch('/api/latest-order');
+        if (!resp.ok) {
+          const err = await resp.json();
+          dumpArea.textContent = 'Error: ' + (err.error || resp.statusText);
+          return;
+        }
+        const json = await resp.json();
+        dumpArea.textContent = JSON.stringify(json, null, 2);
+      } catch (e) {
+        dumpArea.textContent = 'Network error';
+        console.error(e);
+      }
+    });
+  </script>
+</body>
+</html>
