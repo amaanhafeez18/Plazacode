@@ -181,7 +181,7 @@ async function pollOrders() {
       // Check if this is an “Online” order
       if (
         order.orderType &&
-        order.orderType.id === process.env.ONLINE_ORDER_TYPE_ID &&
+        order.orderType.id === process.env.ECWID_SOURCE_ID &&
         !seenOrderIds.has(order.id)
       ) {
         // New online order → print
