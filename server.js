@@ -247,6 +247,16 @@ app.post('/api/stop', (req, res) => {
   res.send('Polling stopped.');
 });
 
+// Serve /privacy → public/privacy.html
+app.get('/privacy', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'privacy.html'));
+});
+
+// Serve /terms → public/terms.html
+app.get('/terms', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'terms.html'));
+});
+
 // ---------------
 app.listen(3000, () => {
   console.log('🚀 Server running on http://localhost:3000');
