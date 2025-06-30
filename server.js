@@ -248,7 +248,6 @@ app.post('/api/stop', (req, res) => {
 });
 
 // ---------------
-// Serve over HTTPS
-https.createServer(sslOptions, app).listen(443, () => {
-  console.log('🔐 HTTPS Server running on https://plazasushiwestern.xyz');
+app.listen(3000, () => {
+  console.log('🚀 Server running on http://localhost:3000');
 });
