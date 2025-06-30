@@ -13,9 +13,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ---------------
 // Load SSL certs
 const sslOptions = {
-  key: fs.readFileSync('/etc/ssl/plaza/private.key'),
-  cert: fs.readFileSync('/etc/ssl/plaza/certificate.crt'),
-  ca: fs.readFileSync('/etc/ssl/plaza/intermediate.crt')
+  key: fs.readFileSync('/etc/ssl/plaza/private.pem'),
+  cert: fs.readFileSync('/etc/ssl/plaza/fullchain.pem')
 };
 
 // ---------------
@@ -97,7 +96,9 @@ app.get('/api/latest-order', async (req, res) => {
   try {
     tokens = JSON.parse(fs.readFileSync('tokens.json'));
   } catch {
+    
     return res.status(500).json({ error: 'Unable to read tokens.json' });
+
   }
 
   const accessToken = tokens.access_token;
