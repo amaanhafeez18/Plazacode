@@ -33,7 +33,7 @@ function writeTokens(obj) {
 // ---------------
 // OAuth Step 1: Redirect merchant to Clover’s OAuth page
 app.get('/oauth/login', (req, res) => {
-  const base = 'https://api.clover.com/oauth/v2/authorize';
+  const base = 'https://www.clover.com/oauth/v2/authorize';;
   const params = new URLSearchParams({
     client_id: process.env.CLOVER_CLIENT_ID,
     response_type: 'code',
